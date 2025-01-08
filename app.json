@@ -3,6 +3,19 @@
     "name": "exproy-puriERP-front-app",
     "slug": "exproy-puriERP-front-app",
     "version": "1.0.0",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "La aplicación necesita acceso a la galería para seleccionar fotos de perfil."
+        }
+      ]
+    ],
     "orientation": "default",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -23,6 +36,16 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "c1115cf1-9edd-4255-8034-b6d94e660558"
+      },
+      "env": {
+        "API_URL_CATALOGS": "http://192.168.100.4:8083/api/clientes",
+        "API_URL_PROVEEDOR": "http://192.168.100.4:8083/api/proveedor",
+        "ANOTHER_ENV_VAR": "another value"
+      }
     }
   }
 }

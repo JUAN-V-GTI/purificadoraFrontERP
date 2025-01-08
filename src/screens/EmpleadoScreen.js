@@ -1,305 +1,291 @@
 import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  ScrollView, 
-  TextInput, 
-  TouchableOpacity, 
-  StyleSheet,
-  useWindowDimensions,
-  
-} from 'react-native';
-import { 
-  Bell, 
-  ChevronLeft, 
-  ChevronRight,
-  UserPlus,
-  ClipboardList,
-  Users,
-  UserCircle,
-  LineChart,
-  DollarSign
-} from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, SafeAreaView, ImageBackground,TextInput, } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons'; 
+import FormEmpleado from '../components/FormEmpleado';
+import FormNomina from '../components/FormNomina';
+import FormRoll from '../components/FormRoll';
+import FormDatosPe from '../components/FormDatosPe'; 
+import FormListaNegra from '../components/FormListaNegra';
 
-const EmpleadoScreen = () => {
-  const [currentMenuIndex, setCurrentMenuIndex] = useState(0);
-  const window = useWindowDimensions();
-  
-  const menuItems = [
-    { icon: <UserPlus size={24} color="#000" />, label: 'Agregar Empleado' },
-    { icon: <ClipboardList size={24} color="#000" />, label: 'Nomina' },
-    { icon: <Users size={24} color="#000" />, label: 'Roll' },
-    { icon: <UserCircle size={24} color="#000" />, label: 'Datos Personales' },
-    { icon: <LineChart size={24} color="#000" />, label: 'Ventas' },
-    { icon: <DollarSign size={24} color="#000" />, label: 'Comisiones' },
-  ];
+const EmployeeScreen = () => {
+  const [activeSection, setActiveSection] = useState(''); // Para controlar qué sección está activa
+  const [employeeData, setEmployeeData] = useState({
+    
+  });
 
-  const visibleMenuItems = 4;
-  const maxIndex = menuItems.length - visibleMenuItems;
-
-  const handlePrevious = () => {
-    setCurrentMenuIndex(prev => Math.max(0, prev - 1));
-  };
-
-  const handleNext = () => {
-    setCurrentMenuIndex(prev => Math.min(maxIndex, prev + 1));
+  // Función para renderizar el contenido según la sección activa
+  const renderContent = () => {
+    switch (activeSection) {
+      case 'Nomina':
+        return (
+          <FormNomina 
+            employeeData={employeeData}
+            setEmployeeData={setEmployeeData}
+          />
+        );
+      case 'Agregar Empleado':
+        return (
+          <FormEmpleado 
+            employeeData={employeeData}
+            setEmployeeData={setEmployeeData}
+          />
+        );
+        case 'Roll':
+          return (
+            <FormRoll 
+              employeeData={employeeData}
+              setEmployeeData={setEmployeeData}
+            />
+          );
+          case 'Datos Personales':
+            return (
+              <FormDatosPe 
+                employeeData={employeeData}
+                setEmployeeData={setEmployeeData}
+              />
+            );
+            case 'Lista Negra':
+              return (
+                <FormListaNegra 
+                  employeeData={employeeData}
+                  setEmployeeData={setEmployeeData}
+                />
+              );
+      default:
+        return (
+          <View style={styles.placeholderContent}>
+            <Text>Seleccione una opción del menú</Text>
+          </View>
+        );
+    }
   };
 
   return (
-    <View style={[styles.container, { width: window.width }]}>
+    <ImageBackground
+    source={require('../../assets/fondo2.jpg')}
+    style={styles.background}
+  >
+
+    <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerTitle}>EMPLEADOS</Text>
-        <TouchableOpacity style={styles.notificationIcon}>
-          <Bell size={24} color="#000" />
-        </TouchableOpacity>
+        <View style={styles.searchBar}>
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Buscar"
+            placeholderTextColor="#666"
+          />
+          <Ionicons name="search" size={24} color="#666" style={{ margin: 10 }} />
+        </View>
+        <Ionicons name="notifications-outline" size={24} color="#201E43" style={styles.notificationIcon} />
       </View>
 
       {/* Menu Icons */}
       <View style={styles.menuContainer}>
-        <TouchableOpacity 
-          style={styles.arrowButton} 
-          onPress={handlePrevious}
-          disabled={currentMenuIndex === 0}
-        >
-          <ChevronLeft size={24} color={currentMenuIndex === 0 ? '#ccc' : '#000'} />
+        <TouchableOpacity>
+          <Ionicons name="chevron-back" size={24} color="#EEEEEE" />
         </TouchableOpacity>
-
-        <View style={styles.iconsContainer}>
-          {menuItems
-            .slice(currentMenuIndex, currentMenuIndex + visibleMenuItems)
-            .map((item, index) => (
-              <TouchableOpacity 
-                key={index} 
-                style={styles.menuItem}
-              >
-                {item.icon}
-                <Text style={styles.menuLabel}>{item.label}</Text>
-              </TouchableOpacity>
-            ))}
+        <View style={styles.menuIcons}>
+          <TouchableOpacity 
+            style={[
+              styles.menuItem, 
+              activeSection === 'Agregar Empleado' && styles.activeMenuItem
+            ]}
+            onPress={() => setActiveSection('Agregar Empleado')}
+          >
+            <Ionicons 
+              name="people" 
+              size={24} 
+              color={activeSection === 'Agregar Empleado' ? '#201E43'  : '#EEEEEE'} 
+            />
+            <Text style={[
+              styles.menuText,
+              activeSection === 'Agregar Empleado' && styles.activeMenuText
+            ]}>Agregar Empleado</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={[
+              styles.menuItem,
+              activeSection === 'Nomina' && styles.activeMenuItem
+            ]}
+            onPress={() => setActiveSection('Nomina')}
+          >
+            <Ionicons 
+              name="cash-outline" 
+              size={24} 
+              color={activeSection === 'Nomina' ? '#201E43'  : '#EEEEEE'} 
+            />
+            <Text style={[
+              styles.menuText,
+              activeSection === 'Nomina' && styles.activeMenuText
+            ]}>Nomina</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={[
+              styles.menuItem,
+              activeSection === 'Roll' && styles.activeMenuItem
+            ]}
+            onPress={() => setActiveSection('Roll')}
+          >
+            <MaterialIcons 
+              name="admin-panel-settings" 
+              size={24} 
+              color={activeSection === 'Roll' ? '#201E43'  : '#EEEEEE'} 
+            />
+            <Text style={[
+              styles.menuText,
+              activeSection === 'Roll' && styles.activeMenuText
+            ]}>Roll</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={[
+              styles.menuItem,
+              activeSection === 'Datos Personales' && styles.activeMenuItem
+            ]}
+            onPress={() => setActiveSection('Datos Personales')}
+          >
+            <Ionicons 
+              name="person" 
+              size={24} 
+              color={activeSection === 'Datos Personales' ? '#201E43' : '#EEEEEE'} 
+            />
+            <Text style={[
+              styles.menuText,
+              activeSection === 'Datos Personales' && styles.activeMenuText
+            ]}>Datos Personales</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={[
+              styles.menuItem,
+              activeSection === 'Lista Negra' && styles.activeMenuItem
+            ]}
+            onPress={() => setActiveSection('Lista Negra')}
+          >
+            <MaterialIcons 
+              name="block" 
+              size={24} 
+              color={activeSection === 'Lista Negra' ? '#201E43'  : '#EEEEEE'} 
+            />
+            <Text style={[
+              styles.menuText,
+              activeSection === 'Lista Negra' && styles.activeMenuText
+            ]}>Lista Negra</Text>
+          </TouchableOpacity>
         </View>
-
-        <TouchableOpacity 
-          style={styles.arrowButton} 
-          onPress={handleNext}
-          disabled={currentMenuIndex === maxIndex}
-        >
-          <ChevronRight size={24} color={currentMenuIndex === maxIndex ? '#ccc' : '#000'} />
+        <TouchableOpacity>
+          <Ionicons name="chevron-forward" size={24} color="#EEEEEE" />
         </TouchableOpacity>
       </View>
-
-      {/* Form */}
-      <ScrollView style={styles.formContainer}>
-        <View style={styles.formRow}>
-          <TextInput 
-            style={styles.input} 
-            placeholder="Nombre"
-          />
-          <TextInput 
-            style={styles.input} 
-            placeholder="Apellido Paterno"
-          />
-          <TextInput 
-            style={styles.input} 
-            placeholder="Apellido Materno"
-          />
-        </View>
-
-        <View style={styles.formRow}>
-          <TextInput 
-            style={styles.input} 
-            placeholder="Estado"
-          />
-          <TextInput 
-            style={styles.input} 
-            placeholder="Colonia"
-          />
-          <TextInput 
-            style={styles.input} 
-            placeholder="Calle"
-          />
-          <TextInput 
-            style={styles.input} 
-            placeholder="Num.Int"
-          />
-          <TextInput 
-            style={styles.input} 
-            placeholder="C.postal"
-          />
-        </View>
-
-        <View style={styles.formRow}>
-          <TextInput 
-            style={styles.input} 
-            placeholder="Roll"
-          />
-          <View style={styles.phoneContainer}>
-            <Text>Telefono Celular</Text>
-            <View style={styles.phoneInputs}>
-              <TextInput 
-                style={styles.phoneInput} 
-                placeholder="55-00-00-00-00"
-              />
-              <Text>o</Text>
-              <TextInput 
-                style={styles.phoneInput} 
-                placeholder="55-00-00-00-00"
-              />
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.formRow}>
-          <View style={styles.dateContainer}>
-            <Text>Fecha de Ingreso</Text>
-            <TextInput 
-              style={styles.dateInput} 
-              placeholder="00/00/00"
-            />
-          </View>
-          <TextInput 
-            style={styles.input} 
-            placeholder="Número SS."
-          />
-        </View>
-
-        <View style={styles.formRow}>
-          <TouchableOpacity style={styles.photoButton}>
-            <Text>Seleccionar Archivo</Text>
-          </TouchableOpacity>
-          <TextInput 
-            style={styles.input} 
-            placeholder="Numero de Cuenta"
-          />
-          <TextInput 
-            style={styles.input} 
-            placeholder="Curp"
-          />
-        </View>
-
-        <TouchableOpacity style={styles.saveButton}>
-          <Text style={styles.saveButtonText}>Guardar</Text>
-        </TouchableOpacity>
-      </ScrollView>
-    </View>
+      {renderContent()}
+    </SafeAreaView>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    resizeMode: 'cover',
+  },
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    padding: 20,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    marginBottom: 20,
   },
   headerTitle: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
+    color: '#333',
   },
-  notificationIcon: {
-    padding: 8,
-  },
-  menuContainer: {
+  searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    backgroundColor: '#e0e0e0',
+    borderRadius: 20,
+    flex: 0.4,
+    marginTop: 10,
+    height:40, 
   },
-  arrowButton: {
-    padding: 8,
-  },
-  iconsContainer: {
+  searchInput: {
+    
     flex: 1,
+    padding: 10,
+    marginRight: 8,
+  },
+
+  menuContainer: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#201E43',
+    padding: 10,
+    borderRadius: 10,
+    marginBottom: 20,
+  },
+  menuIcons: {
+    flexDirection: 'row',
+    flex: 1,
     justifyContent: 'space-around',
     alignItems: 'center',
   },
   menuItem: {
     alignItems: 'center',
-    padding: 8,
+    padding: 10,
+    borderRadius: 8,
   },
-  menuLabel: {
+  activeMenuItem: {
+    backgroundColor: '#EEEEEE',
+    
+  },
+  menuText: {
     fontSize: 12,
-    marginTop: 4,
-    textAlign: 'center',
+    color: '#EEEEEE',
+    marginTop: 5,
   },
-  formContainer: {
-    padding: 16,
-  },
-  formRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    marginBottom: 16,
-    gap: 8,
-  },
-  input: {
-    flex: 1,
-    minWidth: 150,
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-    borderRadius: 8,
-    padding: 8,
-    backgroundColor: '#fff',
-  },
-  phoneContainer: {
-    flex: 2,
-    minWidth: 300,
-  },
-  phoneInputs: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  phoneInput: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-    borderRadius: 8,
-    padding: 8,
-    backgroundColor: '#fff',
-  },
-  dateContainer: {
-    flex: 1,
-    minWidth: 150,
-  },
-  dateInput: {
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-    borderRadius: 8,
-    padding: 8,
-    backgroundColor: '#fff',
-  },
-  photoButton: {
-    flex: 1,
-    minWidth: 150,
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-    borderRadius: 8,
-    padding: 8,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  saveButton: {
-    backgroundColor: '#1a73e8',
-    borderRadius: 8,
-    padding: 16,
-    alignItems: 'center',
-    marginTop: 16,
-  },
-  saveButtonText: {
-    color: '#fff',
+  activeMenuText: {
+    color: '#201E43',
     fontWeight: 'bold',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: 20,
+    gap: 10,
+  },
+  searchButton: {
+    backgroundColor: '#6666ff',
+    padding: 15,
+    borderRadius: 5,
+    width: 120,
+    alignItems: 'center',
+  },
+  applyButton: {
+    backgroundColor: '#ff3333',
+    padding: 15,
+    borderRadius: 5,
+    width: 120,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  placeholderContent: {
+    flex: 1,
+    backgroundColor: '#e8f4e8',
+    borderRadius: 10,
+    padding: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
-export default EmpleadoScreen;
+export default EmployeeScreen;
