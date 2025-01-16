@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet, SafeAreaView, StatusBar,ImageBackground,useWindowDimensions,Platform } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet, SafeAreaView, StatusBar,useWindowDimensions,Platform } from 'react-native';
 import { Ionicons, FontAwesome5 } from '@expo/vector-icons';
 import Constants from 'expo-constants';
 
@@ -9,44 +9,33 @@ const HomeScreen = ({ navigation }) => {
 
 
   const menuItems = [
-    { id: 1, title: 'Gráficos', icon: 'stats-chart', type: 'Ionicons' },
-    { id: 2, title: 'Empleados', icon: 'people', type: 'Ionicons', screen: 'Empleado' },
-    { id: 3, title: 'Clientes', icon: 'person-add', type: 'Ionicons', screen: 'Cliente' },
-    { id: 5, title: 'Pedidos-Clientes', icon: 'basket', type: 'Ionicons'},
-    { id: 6, title: 'Pagos', icon: 'desktop', type: 'Ionicons' },
-    { id: 7, title: 'Ventas', icon: 'cash', type: 'Ionicons' },
-    { id: 8, title: 'Productos', icon: 'cube', type: 'Ionicons' },
-    { id: 9, title: 'Mantenimiento', icon: 'build', type: 'Ionicons' },
-    { id: 10, title: 'Inventario', icon: 'archive', type: 'Ionicons' },
-    { id: 11, title: 'Promociones', icon: 'megaphone', type: 'Ionicons' },
-    { id: 12, title: 'Proveedores', icon: 'truck', type: 'FontAwesome5'},
-    { id: 13, title: 'Compra Proveedores', icon: 'cart', type: 'Ionicons' },
-    { id: 14, title: 'Corte Diario', icon: 'document-text', type: 'Ionicons' },
-    { id: 15, title: 'Corte Mensual', icon: 'document', type: 'Ionicons' },
+    { id: 1, title: 'Gráficos', icon: 'stats-chart', type: 'Ionicons', screen: 'Graficos', color: '#4B9FE1' },
+    { id: 2, title: 'Empleados', icon: 'people', type: 'Ionicons', screen: 'Empleado', color: '#4BD4B6' },
+    { id: 3, title: 'Clientes', icon: 'person-add', type: 'Ionicons', screen: 'Cliente', color: '#F7B55E' },
+    { id: 5, title: 'Pedidos-Clientes', icon: 'basket', type: 'Ionicons', screen: 'Pedido', color: '#FF6B8A' },
+    { id: 6, title: 'Pagos', icon: 'desktop', type: 'Ionicons', screen: 'Pago', color: '#6C5CE7' },
+    { id: 7, title: 'Ventas', icon: 'cash', type: 'Ionicons', screen: 'Venta', color: '#4B9FE1' },
+    { id: 8, title: 'Productos', icon: 'cube', type: 'Ionicons', color: '#4BD4B6' },
+    { id: 9, title: 'Mantenimiento', icon: 'build', type: 'Ionicons', screen: 'Mante', color: '#F7B55E' },
+    { id: 10, title: 'Inventario', icon: 'archive', type: 'Ionicons', screen: 'MateriaPrima', color: '#FF6B8A' },
+    { id: 11, title: 'Promociones', icon: 'megaphone', type: 'Ionicons', color: '#6C5CE7' },
+    { id: 12, title: 'Proveedores', icon: 'truck', type: 'FontAwesome5', color: '#4B9FE1' },
+    { id: 13, title: 'Compra Proveedores', icon: 'cart', type: 'Ionicons', color: '#4BD4B6' },
+    { id: 14, title: 'Bitacora', icon: 'document-text', type: 'Ionicons',screen: 'Bitacoras', color: '#F7B55E' },
+    { id: 15, title: 'Corte Mensual', icon: 'document', type: 'Ionicons', color: '#FF6B8A' },
   ];
- 
   
   const renderIcon = (item) => {
-    const iconSize = isLandscape ? 25 : 30;
-    const iconColor = '#b7b0fe';
-
-    switch (item.type) {
-      case 'Ionicons':
-        return <Ionicons name={item.icon} size={iconSize} color={iconColor} />;
-    
-      case 'FontAwesome5':
-        return <FontAwesome5 name={item.icon} size={iconSize} color={iconColor} />;
-      default:
-        return <Ionicons name="help-circle" size={iconSize} color={iconColor} />;
-    }
+    // Aumentamos el tamaño base de los iconos
+    const iconSize = isLandscape ? 35 : 40; // Anteriormente era 25 y 30
+    return item.type === 'Ionicons' 
+      ? <Ionicons name={item.icon} size={iconSize} color={item.color} />
+      : <FontAwesome5 name={item.icon} size={iconSize} color={item.color} />;
   };
-
   const MenuItem = ({ item }) => {
     const handlePress = () => {
       if (item.screen) {
-        navigation.navigate(item.screen); // Navegar directamente usando el nombre de la pantalla
-      } else {
-        console.log('No screen associated with this menu item');
+        navigation.navigate(item.screen);
       }
     };
    
@@ -55,88 +44,73 @@ const HomeScreen = ({ navigation }) => {
         style={[
           styles.menuItem,
           {
-            width: isLandscape ? '18%' : '30%',
-            aspectRatio: isLandscape ? 1.2 : 1,
+            width: isLandscape ? '22%' : '31%', // Ajustado para acomodar los iconos más grandes
+            aspectRatio: 1, // Cambiado a 1 para mantener forma cuadrada
+            backgroundColor: '#2D2D2D',
           },
         ]}
         onPress={handlePress}
-        activeOpacity={0.8}
+        activeOpacity={0.7}
       >
-        {renderIcon(item)}
-        <Text style={[styles.menuText, { fontSize: isLandscape ? 11 : 12 }]}>
+        <View style={[styles.iconContainer, { backgroundColor: `${item.color}20` }]}>
+          {renderIcon(item)}
+        </View>
+        <Text style={styles.menuText}>
           {item.title}
         </Text>
       </TouchableOpacity>
     );
   };
 
-
   return (
-    <ImageBackground 
-      source={require('../../assets/fondo2.jpg')}
-      style={styles.container}
-      resizeMode="cover"
-    >
-      <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent />
-      <SafeAreaView style={styles.safeArea}>
-        <View style={styles.headerContainer}>
-          <View style={styles.header}>
-            <TouchableOpacity style={styles.menuButton}>
-              <Ionicons name="menu" size={24} color="white" />
+    <SafeAreaView style={styles.safeArea}>
+      <StatusBar barStyle="light-content" backgroundColor="#1B1B1B" />
+      <View style={styles.headerContainer}>
+        <View style={styles.header}>
+          <TouchableOpacity style={styles.menuButton}>
+            <Ionicons name="menu" size={24} color="white" />
+          </TouchableOpacity>
+          <View style={styles.headerRight}>
+            <TouchableOpacity style={styles.headerIcon}>
+              <Ionicons name="notifications" size={24} color="white" />
             </TouchableOpacity>
-            <View style={styles.headerRight}>
-              <TouchableOpacity style={styles.headerIcon}>
-                <Ionicons name="notifications" size={24} color="black" />
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.headerIcon}>
-                <Ionicons name="settings" size={24} color="black" />
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity style={styles.headerIcon}>
+              <Ionicons name="settings" size={24} color="white" />
+            </TouchableOpacity>
           </View>
         </View>
-        <ScrollView 
-          contentContainerStyle={[
-            styles.scrollContent,
-            { paddingHorizontal: isLandscape ? 24 : 16 }
-          ]}
-        >
-          <View style={[
-            styles.menuGrid,
-            { 
-              justifyContent: isLandscape ? 'flex-start' : 'space-between',
-              gap: isLandscape ? 16 : 8
-            }
-          ]}>
-            {menuItems.map((item) => (
-              <MenuItem key={item.id} item={item} />
-            ))}
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </ImageBackground>
+      </View>
+      <ScrollView 
+        style={styles.scrollView}
+        contentContainerStyle={[
+          styles.scrollContent,
+          { paddingHorizontal: isLandscape ? 24 : 16 }
+        ]}
+      >
+        <View style={styles.menuGrid}>
+          {menuItems.map((item) => (
+            <MenuItem key={item.id} item={item} />
+          ))}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
-
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: Platform.OS === 'android' ? Constants.statusBarHeight : 0,
-  },
   safeArea: {
     flex: 1,
-    backgroundColor: 'transparent',
+    backgroundColor: '#1B1B1B',
+    paddingTop: Platform.OS === 'android' ? Constants.statusBarHeight : 0,
   },
   headerContainer: {
-    backgroundColor: 'transparent',
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255,255,255,0.2)',
+    borderBottomColor: '#2D2D2D',
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 16,
-    backgroundColor: 'transparent',
   },
   headerRight: {
     flexDirection: 'row',
@@ -144,23 +118,48 @@ const styles = StyleSheet.create({
   headerIcon: {
     marginLeft: 20,
   },
+  scrollView: {
+    flex: 1,
+    backgroundColor: '#1B1B1B',
+  },
   scrollContent: {
     padding: 16,
   },
   menuGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+    gap: 16,
+    justifyContent: 'space-between',
   },
   menuItem: {
+    padding: 20, // Aumentado de 16 a 20 para dar más espacio
+    borderRadius: 15,
     alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 16,
+    ...Platform.select({
+      ios: {
+        shadowColor: 'rgba(0, 0, 0, 0.5)',
+        shadowOffset: { width: 4, height: 4 },
+        shadowOpacity: 0.5,
+        shadowRadius: 3,
+      },
+      android: {
+        elevation: 8,
+      },
+    }),
+  },
+  iconContainer: {
+    padding: 16, // Aumentado de 12 a 16
+    borderRadius: 16, // Aumentado de 12 a 16
+    marginBottom: 12, // Aumentado de 8 a 12
   },
   menuText: {
     textAlign: 'center',
-    color: '#333',
+    color: '#FFFFFF',
+    fontSize: 14, // Aumentado de 12 a 14
     fontWeight: '500',
+    marginTop: 10, // Aumentado de 8 a 10
   },
 });
+
 
 export default HomeScreen;

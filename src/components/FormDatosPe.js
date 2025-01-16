@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   formContainer: {
-    backgroundColor: '#EEEEEE',
+    backgroundColor: "#2a2a2a",
     borderRadius: 10,
     padding: 20,
     margin: 10,

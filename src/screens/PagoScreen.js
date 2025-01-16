@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, SafeAreaView, TouchableOpacity, Image } from 'react-native';
-import { UserPlus, Shield, DollarSign, Lock, Edit } from 'lucide-react-native';
+import { DollarSign, FileText } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
-import FormEmpleado from '../components/FormEmpleado';
-import FormNomina from '../components/FormNomina';
-import FormRoll from '../components/FormRoll';
-import FormDatosPe from '../components/FormDatosPe'; 
-import FormListaNegra from '../components/FormListaNegra';
+import FormGasto from '../components/PagoForm/FormGasto';
+import FormGastoV from '../components/PagoForm/FormGastoV';
+import FormGastoF from '../components/PagoForm/FormGastoF';
+import FormPago from '../components/PagoForm/FormPago';
 
 const PagosScreen = () => {
     const [activeTab, setActiveTab] = useState('crear');
@@ -14,18 +13,16 @@ const PagosScreen = () => {
   
     const renderContent = () => {
       switch (activeTab) {
-        case 'empleado':
-          return <FormEmpleado />;
-        case 'nomina':
-          return <FormNomina />;
-        case 'roll':
-          return <FormRoll />;
-        case 'datos':
-          return <FormDatosPe />;
-        case 'lista':
-          return <FormListaNegra />;
+        case 'crear':
+          return <FormGasto />;
+        case 'variable':
+          return <FormGastoV />;
+        case 'fijo':
+          return <FormGastoF />;
+        case 'registro':
+          return <FormPago />;
         default:
-          return <FormEmpleado />;
+          return <FormGasto />;
       }
     };
   
@@ -42,87 +39,72 @@ const PagosScreen = () => {
               style={styles.homeImage}
             />
           </TouchableOpacity>
-          <Text style={styles.headerText}>Empleados</Text>
+          <Text style={styles.headerText}>Pagos</Text>
         </View>
   
         {/* Menu Container */}
         <View style={styles.tabContainer}>
           <View style={styles.tabBackground}>
             <TouchableOpacity 
-              style={[styles.tab, activeTab === 'empleado' && styles.activeTab]}
-              onPress={() => setActiveTab('empleado')}
+              style={[styles.tab, activeTab === 'crear' && styles.activeTab]}
+              onPress={() => setActiveTab('crear')}
             >
               <View style={styles.tabContent}>
-                <UserPlus  
-                  color={activeTab === 'empleado' ? '#fff' : '#666'} 
+                <DollarSign 
+                  color={activeTab === 'crear' ? '#fff' : '#666'} 
                   size={20} 
                   style={styles.tabIcon}
                 />
-                <Text style={[styles.tabText, activeTab === 'empleado' && styles.activeTabText]}>
-                  Registrar empleado
+                <Text style={[styles.tabText, activeTab === 'crear' && styles.activeTabText]}>
+                  Crear Tipo de Gasto
                 </Text>
               </View>
             </TouchableOpacity>
   
             <TouchableOpacity 
-              style={[styles.tab, activeTab === 'nomina' && styles.activeTab]}
-              onPress={() => setActiveTab('nomina')}
+              style={[styles.tab, activeTab === 'variable' && styles.activeTab]}
+              onPress={() => setActiveTab('variable')}
             >
               <View style={styles.tabContent}>
-                <DollarSign  
-                  color={activeTab === 'nomina' ? '#fff' : '#666'} 
+                <FileText 
+                  color={activeTab === 'variable' ? '#fff' : '#666'} 
                   size={20} 
                   style={styles.tabIcon}
                 />
-                <Text style={[styles.tabText, activeTab === 'nomina' && styles.activeTabText]}>
-                  Nomina
+                <Text style={[styles.tabText, activeTab === 'variable' && styles.activeTabText]}>
+                  Pagos variables
                 </Text>
               </View>
             </TouchableOpacity>
   
             <TouchableOpacity 
-              style={[styles.tab, activeTab === 'roll' && styles.activeTab]}
-              onPress={() => setActiveTab('roll')}
+              style={[styles.tab, activeTab === 'fijo' && styles.activeTab]}
+              onPress={() => setActiveTab('fijo')}
             >
               <View style={styles.tabContent}>
-                <Shield 
-                  color={activeTab === 'roll' ? '#fff' : '#666'} 
+                <FileText 
+                  color={activeTab === 'fijo' ? '#fff' : '#666'} 
                   size={20} 
                   style={styles.tabIcon}
                 />
-                <Text style={[styles.tabText, activeTab === 'roll' && styles.activeTabText]}>
-                  roll
+                <Text style={[styles.tabText, activeTab === 'fijo' && styles.activeTabText]}>
+                  Pagos fijos
                 </Text>
               </View>
             </TouchableOpacity>
   
             <TouchableOpacity 
-              style={[styles.tab, activeTab === 'datos' && styles.activeTab]}
-              onPress={() => setActiveTab('datos')}
+              style={[styles.tab, activeTab === 'registro' && styles.activeTab]}
+              onPress={() => setActiveTab('registro')}
             >
               <View style={styles.tabContent}>
-                <Edit 
-                  color={activeTab === 'datos' ? '#fff' : '#666'} 
+                <DollarSign 
+                  color={activeTab === 'registro' ? '#fff' : '#666'} 
                   size={20} 
                   style={styles.tabIcon}
                 />
-                <Text style={[styles.tabText, activeTab === 'datos' && styles.activeTabText]}>
-                  Datos
-                </Text>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity 
-              style={[styles.tab, activeTab === 'lista' && styles.activeTab]}
-              onPress={() => setActiveTab('lista')}
-            >
-              <View style={styles.tabContent}>
-                <Lock 
-                  color={activeTab === 'lista' ? '#fff' : '#666'} 
-                  size={20} 
-                  style={styles.tabIcon}
-                />
-                <Text style={[styles.tabText, activeTab === 'lista' && styles.activeTabText]}>
-                  Lista Negra
+                <Text style={[styles.tabText, activeTab === 'registro' && styles.activeTabText]}>
+                  Registro de Pago
                 </Text>
               </View>
             </TouchableOpacity>
@@ -165,7 +147,7 @@ const PagosScreen = () => {
     headerText: {
       fontSize: 24,
       fontWeight: 'bold',
-      color: '#ffff',
+      color: '#6200ee',
     },
     tabContainer: {
       backgroundColor: '#1a1a1a',

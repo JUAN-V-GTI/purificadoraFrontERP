@@ -86,7 +86,7 @@ const FormCliente = () => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#EEEEEE',
+    backgroundColor: '#333',
     borderRadius: 10,
     padding: 20,
     margin: 10,

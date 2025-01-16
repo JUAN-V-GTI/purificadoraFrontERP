@@ -1,370 +1,175 @@
-import React, { useState } from 'react';
-import { 
-  StyleSheet, 
-  View, 
-  Text, 
-  TextInput, 
-  TouchableOpacity, 
-  ScrollView,
-  Modal,
-  FlatList 
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import React, { useState } from "react";
+import { StyleSheet, View, ScrollView } from "react-native";
+import InputComponents from "../components/ComponetsForm/InputComponets";
+import RoleSelectorInput from "../components/ComponetsForm/RoleSelectorInput";
+import TimeRangeInput from "../components/ComponetsForm/TimeRangeInput";
+import ButtonComponent from "./ComponetsForm/ButtonComponent";
+import FrecuenciaSelectorInput from "./ComponetsForm/FrecuenciaComponent";
+import EstadoSelectorInput from "./ComponetsForm/EstatusComponets";
+const FormNomina = ({ onSave }) => {
+  const [formData, setFormData] = useState({
+    nombre: "",
+    sueldo: "",
+    comision: "",
+    horario: "",
+    frecuenciaPago: "",
+    estado:"",
+  });
 
-const FormRoll = ({ employeeData, setEmployeeData }) => {
-  const [isRollModalVisible, setRollModalVisible] = useState(false);
-  const [isPaymentModalVisible, setPaymentModalVisible] = useState(false);
-  const [isStatusModalVisible, setStatusModalVisible] = useState(false);
-  const [selectedRoll, setSelectedRoll] = useState('Vendedor');
-  const [selectedPayment, setSelectedPayment] = useState('Diario');
-  const [selectedStatus, setSelectedStatus] = useState('Deshabilitado');
-
-  const rollTypes = [
-    { label: 'Seleccionar tipo de roll', value: '', isHeader: true },
-    { label: 'Vendedor', value: 'Vendedor' },
-    { label: 'Administrador', value: 'Administrador' },
-    { label: 'Repartidor 1', value: 'Repartidor 1' },
-    { label: 'Repartidor 2', value: 'Repartidor 2' },
-    { label: 'Repartidor 3', value: 'Repartidor 3' },
-  ];
-
-  const paymentTypes = [
-    { label: 'Seleccionar tipo de pago', value: '', isHeader: true },
-    { label: 'Diario', value: 'Diario' },
-    { label: 'Semanal', value: 'Semanal' },
-    { label: 'Quincenal', value: 'Quincenal' },
-  ];
-
-  const statusTypes = [
-    { label: 'Seleccionar estatus', value: '', isHeader: true },
-    { label: 'Habilitado', value: 'Habilitado' },
-    { label: 'Deshabilitado', value: 'Deshabilitado' },
-  ];
-
-  // Custom Dropdown component
-  const CustomDropdown = ({ value, onPress }) => (
-    <TouchableOpacity 
-      style={styles.dropdownContainer}
-      onPress={onPress}
-    >
-      <Text style={styles.inputText}>{value}</Text>
-      <Ionicons name="chevron-down" size={20} color="#666" />
-    </TouchableOpacity>
-  );
-
-  const handleSelectRoll = (item) => {
-    if (!item.isHeader) {
-      setSelectedRoll(item.value);
-      setRollModalVisible(false);
-    }
+  const updateFormData = (field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
   };
-
-  const handleSelectPayment = (item) => {
-    if (!item.isHeader) {
-      setSelectedPayment(item.value);
-      setPaymentModalVisible(false);
-    }
+  const formatMoney = (value) => {
+    const numericValue = value.replace(/[^0-9]/g, ""); // Elimina caracteres no numéricos
+    return `$${Number(numericValue).toLocaleString()}`; // Formatea como dinero
   };
-
-  const handleSelectStatus = (item) => {
-    if (!item.isHeader) {
-      setSelectedStatus(item.value);
-      setStatusModalVisible(false);
-    }
+  const handleSave = () => {
+    onSave?.(formData);
   };
 
   return (
-    <ScrollView>
-      <View style={styles.formContainer}>
-        <View style={styles.content}>
-          {/* Primera fila */}
-          <View style={styles.row}>
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Tipo-Roll</Text>
-              <CustomDropdown 
-                value={selectedRoll} 
-                onPress={() => setRollModalVisible(true)} 
-              />
+    <View style={styles.mainContainer}>
+      <ScrollView style={styles.formContainer}>
+        <View style={styles.twoColumnLayout}>
+          {/* Columna Izquierda */}
+          <View style={styles.column}>
+            <View style={styles.fieldContainer}>
+            <RoleSelectorInput
+                  label="Rol"
+                  value={formData.rol}
+                  onChange={(value) => updateFormData("rol", value)}
+                />
             </View>
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Pago por</Text>
-              <CustomDropdown 
-                value={selectedPayment} 
-                onPress={() => setPaymentModalVisible(true)} 
-              />
-            </View>
-          </View>
 
-          {/* Segunda fila */}
-          <View style={styles.row}>
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Sueldo</Text>
-              <TextInput
-                style={styles.input}
-                value="$ 1500"
+            <View style={styles.fieldContainer}>
+              <InputComponents
+                label="Sueldo"
+                value={formData.sueldo}
+                onChangeText={(value) => updateFormData("sueldo", value)}
                 keyboardType="numeric"
-                placeholder="Ingrese sueldo"
+                formatFunction={formatMoney} // Pasa la función de formateo
               />
             </View>
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Estatus</Text>
-              <CustomDropdown 
-                value={selectedStatus} 
-                onPress={() => setStatusModalVisible(true)} 
+
+            <View style={styles.fieldContainer}>
+              <InputComponents
+                label="Comisión"
+                value={formData.comision}
+                onChangeText={(value) => updateFormData("comision", value)}
+                keyboardType="numeric"
+                formatFunction={formatMoney} // Pasa la función de formateo
               />
             </View>
           </View>
 
-          {/* Tercera fila */}
-          <View style={styles.row}>
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Comision</Text>
-              <CustomDropdown value="No Aplica" onPress={() => {}} />
+          {/* Columna Derecha */}
+          <View style={styles.column}>
+            <View style={styles.fieldContainer}>
+              <TimeRangeInput
+                label="Horario"
+                value={formData.horario}
+                onChange={(value) => updateFormData("horario", value)}
+              />
             </View>
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Horario</Text>
-              <View style={styles.timeContainer}>
-                <TextInput
-                  style={[styles.input, styles.timeInput]}
-                  value="9:00 am"
-                />
-                <Text style={styles.timeText}>A</Text>
-                <TextInput
-                  style={[styles.input, styles.timeInput]}
-                  value="5:00 pm"
-                />
-              </View>
-            </View>
-          </View>
 
-          {/* Botones */}
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.editButton}>
-              <Text style={styles.buttonText}>Editar</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.saveButton}>
-              <Text style={styles.buttonText}>Crear</Text>
-            </TouchableOpacity>
+            <View style={styles.fieldContainer}>
+            <FrecuenciaSelectorInput
+                  label="Frecuencia de pago"
+                  value={formData.frecuenciaPago}
+                  onChange={(value) => updateFormData("frecuenciaPago", value)}
+                />
+            </View>
+            <View style={styles.fieldContainer}>
+            <EstadoSelectorInput
+                  label="Estatus"
+                  value={formData.estado}
+                  onChange={(value) => updateFormData("estado", value)}
+                />
+            </View>
+            <View style={styles.buttonRow}>
+  <ButtonComponent
+    buttons={[
+      {
+        title: "Editar",
+        onPress: handleSave,
+        style: styles.button1, // Aplica el estilo centralizado
+        textStyle: { fontSize: 14 },
+      },
+    ]}
+  />
+  <ButtonComponent
+    buttons={[
+      {
+        title: "Guardar",
+        onPress: handleSave,
+        style: styles.button, // Aplica el estilo centralizado
+        textStyle: { fontSize: 14 },
+      },
+    ]}
+  />
+</View>
           </View>
         </View>
-
-        {/* Modal para Tipo-Roll */}
-        <Modal
-          visible={isRollModalVisible}
-          transparent
-          animationType="fade"
-          onRequestClose={() => setRollModalVisible(false)}
-        >
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContainer}>
-              <FlatList
-                data={rollTypes}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({ item }) => (
-                  <TouchableOpacity
-                    style={[
-                      styles.modalItem,
-                      item.isHeader && styles.modalHeader,
-                    ]}
-                    onPress={() => handleSelectRoll(item)}
-                  >
-                    <Text
-                      style={[
-                        styles.modalItemText,
-                        item.isHeader && styles.modalHeaderText,
-                      ]}
-                    >
-                      {item.label}
-                    </Text>
-                  </TouchableOpacity>
-                )}
-              />
-            </View>
-          </View>
-        </Modal>
-
-        {/* Modal para Tipo de Pago */}
-        <Modal
-          visible={isPaymentModalVisible}
-          transparent
-          animationType="fade"
-          onRequestClose={() => setPaymentModalVisible(false)}
-        >
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContainer}>
-              <FlatList
-                data={paymentTypes}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({ item }) => (
-                  <TouchableOpacity
-                    style={[
-                      styles.modalItem,
-                      item.isHeader && styles.modalHeader,
-                    ]}
-                    onPress={() => handleSelectPayment(item)}
-                  >
-                    <Text
-                      style={[
-                        styles.modalItemText,
-                        item.isHeader && styles.modalHeaderText,
-                      ]}
-                    >
-                      {item.label}
-                    </Text>
-                  </TouchableOpacity>
-                )}
-              />
-            </View>
-          </View>
-        </Modal>
-
-        {/* Modal para Estatus */}
-        <Modal
-          visible={isStatusModalVisible}
-          transparent
-          animationType="fade"
-          onRequestClose={() => setStatusModalVisible(false)}
-        >
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContainer}>
-              <FlatList
-                data={statusTypes}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({ item }) => (
-                  <TouchableOpacity
-                    style={[
-                      styles.modalItem,
-                      item.isHeader && styles.modalHeader,
-                    ]}
-                    onPress={() => handleSelectStatus(item)}
-                  >
-                    <Text
-                      style={[
-                        styles.modalItemText,
-                        item.isHeader && styles.modalHeaderText,
-                      ]}
-                    >
-                      {item.label}
-                    </Text>
-                  </TouchableOpacity>
-                )}
-              />
-            </View>
-          </View>
-        </Modal>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  mainContainer: {
+    flex: 1,
+    backgroundColor: "#1B1B1B",
+  },
   formContainer: {
-    backgroundColor: '#EEEEEE',
+    backgroundColor: "#2a2a2a",
     borderRadius: 10,
     padding: 20,
     margin: 10,
   },
-  content: {
+  twoColumnLayout: {
+    flexDirection: "row",
+    justifyContent: "space-between",
     gap: 20,
+  },
+  column: {
+    flex: 1,
   },
   row: {
-    flexDirection: 'row',
-    gap: 20,
-    alignItems: 'flex-end',
-  },
-  inputGroup: {
-    flex: 1,
-  },
-  label: {
-    fontSize: 16,
-    marginBottom: 5,
-    color: '#333',
-    fontStyle: 'italic',
-  },
-  input: {
-    backgroundColor: '#fff',
-    borderRadius: 5,
-    padding: 10,
-    fontSize: 16,
-  },
-  dropdownContainer: {
-    backgroundColor: '#fff',
-    borderRadius: 5,
-    padding: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  timeContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
     gap: 10,
+    marginBottom: 15,
   },
-  timeInput: {
+  halfField: {
     flex: 1,
   },
-  timeText: {
-    marginHorizontal: 10,
-    fontSize: 16,
-    color: '#333',
+  fieldContainer: {
+    marginBottom: 1,
+    width: "100%",
   },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    gap: 10,
-    marginTop: 20,
+  buttonRow: {
+    flexDirection: "row", // Alinea los botones en fila
+    justifyContent: 'flex-end', // Espacia los botones proporcionalmente
+   marginBottom:10,
+    
   },
-  editButton: {
-    backgroundColor: '#F93827',
-    padding: 10,
-    borderRadius: 5,
-    width: 100,
-    alignItems: 'center',
+  button: {
+    marginHorizontal: 1, // Espaciado pequeño entre botones
+    backgroundColor: "#28A745", // Color de fondo predeterminado
+    padding: 12, // Aumenta el tamaño del botón
+    borderRadius: 5, // Bordes redondeados
+    alignItems: "center", // Centra el texto dentro del botón
   },
-  saveButton: {
-    backgroundColor: '#4335A7',
-    padding: 10,
-    borderRadius: 5,
-    width: 100,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  inputText: {
-    fontSize: 16,
-    color: '#333',
-  },
-  modalOverlay: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-  },
-  modalContainer: {
-    backgroundColor: '#fff',
-    width: '80%',
-    borderRadius: 8,
-    overflow: 'hidden',
-  },
-  modalItem: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-  },
-  modalHeader: {
-    backgroundColor: '#134B70',
-  },
-  modalItemText: {
-    fontSize: 16,
-    textAlign: 'center',
-    color: '#333',
-  },
-  modalHeaderText: {
-    color: '#fff',
-    fontWeight: 'bold',
+  button1: {
+    marginHorizontal: 1, // Espaciado pequeño entre botones
+    backgroundColor: "#ff9800", // Color de fondo predeterminado
+    padding: 12, // Aumenta el tamaño del botón
+    borderRadius: 5, // Bordes redondeados
+    alignItems: "center", // Centra el texto dentro del botón
   },
 });
 
-export default FormRoll;
+export default FormNomina;
